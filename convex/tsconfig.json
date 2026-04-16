@@ -1,0 +1,20 @@
+{
+  /* This tsconfig.json covers the Convex functions in this directory.
+   * Based on https://docs.convex.dev/typescript/tsconfig */
+  "compilerOptions": {
+    /* Standard settings for Convex functions */
+    "target": "ESNext",
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "jsx": "react-jsx",
+    "strict": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+
+    /* Convex functions run in a custom environment */
+    "lib": ["ESNext", "dom"],
+    "types": ["node"]
+  }
+}
