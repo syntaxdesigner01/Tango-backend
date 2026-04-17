@@ -1,17 +1,17 @@
 import { internalQuery, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
+import { getAuthUser } from "./auth";
 
 // Look up the currently authenticated user
 export const getByIdentity = query({
   args: {},
   handler: async (ctx) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) return null;
-    return await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .unique();
+    try {
+      return await getAuthUser(ctx);
+    } catch {
+      return null;
+    }
   },
 });
 
@@ -45,7 +45,7 @@ export const addToCompany = mutation({
       notifyChannels: ["email"],
       morningTime: "10:00",
       eveningTime: "17:00",
-      timezone: "UTC",
+      timezone: "Africa/Lagos",
     });
 
     return { userId, staffId };
@@ -68,19 +68,23 @@ export const updatePreferences = mutation({
     timezone: v.optional(v.string()),
   },
   handler: async (ctx, args) => {
-    const identity = await ctx.auth.getUserIdentity();
-    if (!identity) throw new ConvexError("Not authenticated");
-
-    const user = await ctx.db
-      .query("users")
-      .withIndex("by_email", (q) => q.eq("email", identity.email!))
-      .unique();
-    if (!user) throw new ConvexError("User not found");
+    const user = await getAuthUser(ctx);
 
     const patch = Object.fromEntries(
       Object.entries(args).filter(([, v]) => v !== undefined),
     );
     await ctx.db.patch(user._id, patch);
+  },
+});
+
+// Used by the auth profile function to validate staffId during sign-up
+export const getByEmail = internalQuery({
+  args: { email: v.string() },
+  handler: async (ctx, args) => {
+    return await ctx.db
+      .query("users")
+      .withIndex("by_email", (q) => q.eq("email", args.email))
+      .unique();
   },
 });
 

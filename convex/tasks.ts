@@ -2,19 +2,10 @@ import { mutation, query } from "./_generated/server";
 import type { MutationCtx, QueryCtx } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
+import { getAuthUser } from "./auth";
 
 // --- Auth helper ---
 
-async function getAuthUser(ctx: QueryCtx | MutationCtx) {
-  const identity = await ctx.auth.getUserIdentity();
-  if (!identity) throw new ConvexError("Not authenticated");
-  const user = await ctx.db
-    .query("users")
-    .withIndex("by_email", (q) => q.eq("email", identity.email!))
-    .unique();
-  if (!user) throw new ConvexError("User not found");
-  return user;
-}
 
 // --- Date helpers (ISO "YYYY-MM-DD") ---
 
@@ -22,28 +13,56 @@ function toISO(d: Date): string {
   return d.toISOString().split("T")[0];
 }
 
-function todayRange(): { start: string; end: string } {
-  const d = toISO(new Date());
+/**
+ * Gets the current date string in a specific timezone (YYYY-MM-DD).
+ */
+function getLocalISODate(timezone: string, date: Date = new Date()): string {
+  try {
+    return new Intl.DateTimeFormat("en-CA", {
+      timeZone: timezone,
+      year: "numeric",
+      month: "2-digit",
+      day: "2-digit",
+    }).format(date);
+  } catch (e) {
+    // Fallback to UTC if timezone is invalid
+    return toISO(date);
+  }
+}
+
+function todayRange(timezone: string): { start: string; end: string } {
+  const d = getLocalISODate(timezone);
   return { start: d, end: d };
 }
 
-function thisWeekRange(): { start: string; end: string } {
+function thisWeekRange(timezone: string): { start: string; end: string } {
   const now = new Date();
-  const day = now.getUTCDay(); // 0 = Sunday
+  const localDateStr = getLocalISODate(timezone, now);
+  const localDate = new Date(localDateStr); // Local midnight
+
+  const day = localDate.getUTCDay(); // 0 = Sunday
   const diffToMonday = (day + 6) % 7; // days since last Monday
-  const monday = new Date(now);
-  monday.setUTCDate(now.getUTCDate() - diffToMonday);
+  
+  const monday = new Date(localDate);
+  monday.setUTCDate(localDate.getUTCDate() - diffToMonday);
+  
   const sunday = new Date(monday);
   sunday.setUTCDate(monday.getUTCDate() + 6);
+  
   return { start: toISO(monday), end: toISO(sunday) };
 }
 
-function thisMonthRange(): { start: string; end: string } {
+function thisMonthRange(timezone: string): { start: string; end: string } {
   const now = new Date();
-  const year = now.getUTCFullYear();
-  const month = now.getUTCMonth();
+  const localDateStr = getLocalISODate(timezone, now);
+  const localDate = new Date(localDateStr);
+
+  const year = localDate.getUTCFullYear();
+  const month = localDate.getUTCMonth();
+  
   const firstDay = new Date(Date.UTC(year, month, 1));
   const lastDay = new Date(Date.UTC(year, month + 1, 0));
+  
   return { start: toISO(firstDay), end: toISO(lastDay) };
 }
 
@@ -66,10 +85,11 @@ export const listByRange = query({
 
 // Fetch today's tasks
 export const listToday = query({
-  args: {},
-  handler: async (ctx) => {
+  args: { timezone: v.optional(v.string()) },
+  handler: async (ctx, args) => {
     const user = await getAuthUser(ctx);
-    const { start, end } = todayRange();
+    const tz = args.timezone ?? user.timezone ?? "Africa/Lagos";
+    const { start, end } = todayRange(tz);
     return await ctx.db
       .query("tasks")
       .withIndex("by_user_date", (q) =>
@@ -81,10 +101,11 @@ export const listToday = query({
 
 // Fetch tasks for the current week (Monday–Sunday)
 export const listThisWeek = query({
-  args: {},
-  handler: async (ctx) => {
+  args: { timezone: v.optional(v.string()) },
+  handler: async (ctx, args) => {
     const user = await getAuthUser(ctx);
-    const { start, end } = thisWeekRange();
+    const tz = args.timezone ?? user.timezone ?? "Africa/Lagos";
+    const { start, end } = thisWeekRange(tz);
     return await ctx.db
       .query("tasks")
       .withIndex("by_user_date", (q) =>
@@ -96,10 +117,11 @@ export const listThisWeek = query({
 
 // Fetch tasks for the current calendar month
 export const listThisMonth = query({
-  args: {},
-  handler: async (ctx) => {
+  args: { timezone: v.optional(v.string()) },
+  handler: async (ctx, args) => {
     const user = await getAuthUser(ctx);
-    const { start, end } = thisMonthRange();
+    const tz = args.timezone ?? user.timezone ?? "Africa/Lagos";
+    const { start, end } = thisMonthRange(tz);
     return await ctx.db
       .query("tasks")
       .withIndex("by_user_date", (q) =>

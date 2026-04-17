@@ -1,0 +1,1551 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tango API Docs</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/github-dark.min.css" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/typescript.min.js"></script>
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --sidebar-w: 260px; --sidebar-bg: #1a1a2e; --sidebar-hover: #16213e;
+      --sidebar-active: #0f3460; --accent: #a78bfa; --accent2: #7c3aed;
+      --bg: #f8f8fb; --card-bg: #ffffff; --border: #e4e4f0;
+      --text: #1e1e2e; --text-muted: #6b7280;
+      --badge-query: #3b82f6; --badge-mutation: #10b981; --badge-action: #f59e0b;
+      --badge-internal: #6b7280; --badge-http: #8b5cf6;
+      --font: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      --mono: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+    }
+    body { font-family: var(--font); background: var(--bg); color: var(--text); display: flex; min-height: 100vh; }
+    #sidebar { width: var(--sidebar-w); height: 100vh; background: var(--sidebar-bg); color: #c9d1d9; position: fixed; top: 0; left: 0; overflow-y: auto; display: flex; flex-direction: column; z-index: 100; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.15) transparent; }
+    #sidebar::-webkit-scrollbar { width: 4px; }
+    #sidebar::-webkit-scrollbar-track { background: transparent; }
+    #sidebar::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.15); border-radius: 4px; }
+    #sidebar::-webkit-scrollbar-thumb:hover { background: rgba(255,255,255,0.3); }
+    .sidebar-brand { padding: 20px 20px 16px; border-bottom: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-brand h1 { font-size: 18px; font-weight: 700; color: #fff; letter-spacing: -0.5px; }
+    .sidebar-brand p { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 4px; }
+    .sidebar-section { padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.06); }
+    .sidebar-section-label { font-size: 10px; font-weight: 700; letter-spacing: 1.2px; text-transform: uppercase; color: rgba(255,255,255,0.3); padding: 10px 20px 4px; }
+    .sidebar-link { display: flex; align-items: center; gap: 8px; padding: 7px 20px; font-size: 13px; color: rgba(255,255,255,0.65); text-decoration: none; cursor: pointer; transition: background 0.15s, color 0.15s; border-left: 3px solid transparent; }
+    .sidebar-link:hover { background: var(--sidebar-hover); color: #fff; }
+    .sidebar-link.active { background: var(--sidebar-active); color: #fff; border-left-color: var(--accent); }
+    .fn-badge { font-size: 9px; font-weight: 700; padding: 1px 5px; border-radius: 3px; text-transform: uppercase; letter-spacing: 0.5px; margin-left: auto; flex-shrink: 0; color: #fff; }
+    .fn-badge-q { background: var(--badge-query); }
+    .fn-badge-m { background: var(--badge-mutation); }
+    .fn-badge-a { background: var(--badge-action); color: #1a1a2e; }
+    .fn-badge-i { background: var(--badge-internal); }
+    .sidebar-footer { margin-top: auto; padding: 12px 20px; border-top: 1px solid rgba(255,255,255,0.08); }
+    .sidebar-footer a { display: block; font-size: 12px; color: var(--accent); text-decoration: none; padding: 4px 0; }
+    .sidebar-footer a:hover { text-decoration: underline; }
+    #main { margin-left: var(--sidebar-w); flex: 1; padding: 0; }
+    .section { padding: 40px 40px 20px; max-width: 960px; }
+    .section-title { font-size: 22px; font-weight: 700; margin-bottom: 6px; }
+    .section-desc { font-size: 14px; color: var(--text-muted); margin-bottom: 28px; line-height: 1.6; }
+    .card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; margin-bottom: 20px; overflow: hidden; }
+    .card-header { padding: 16px 20px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; background: #fafafa; }
+    .card-header h3 { font-size: 15px; font-weight: 600; font-family: var(--mono); }
+    .card-body { padding: 20px; }
+    .badge { font-size: 10px; font-weight: 700; padding: 3px 8px; border-radius: 4px; text-transform: uppercase; letter-spacing: 0.5px; color: #fff; flex-shrink: 0; }
+    .badge-query    { background: var(--badge-query); }
+    .badge-mutation { background: var(--badge-mutation); }
+    .badge-action   { background: var(--badge-action); color: #1a1a2e; }
+    .badge-internal { background: var(--badge-internal); }
+    .badge-http     { background: var(--badge-http); }
+    .badge-get      { background: #10b981; }
+    .badge-post     { background: var(--badge-action); color: #1a1a2e; }
+    .fn-desc { font-size: 13px; color: var(--text-muted); margin-bottom: 16px; line-height: 1.6; }
+    .args-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 8px; }
+    table.args { width: 100%; border-collapse: collapse; font-size: 13px; margin-bottom: 16px; }
+    table.args thead th { text-align: left; padding: 7px 12px; background: #f4f4f8; border-bottom: 1px solid var(--border); font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.6px; color: var(--text-muted); }
+    table.args tbody td { padding: 8px 12px; border-bottom: 1px solid #f0f0f5; vertical-align: top; }
+    table.args tbody tr:last-child td { border-bottom: none; }
+    .arg-name { font-family: var(--mono); font-size: 12px; color: #5b21b6; font-weight: 600; }
+    .arg-type { font-family: var(--mono); font-size: 12px; color: var(--badge-query); }
+    .pill-required { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px; background: #fee2e2; color: #b91c1c; font-weight: 600; }
+    .pill-optional { display: inline-block; font-size: 10px; padding: 1px 6px; border-radius: 3px; background: #f0fdf4; color: #166534; font-weight: 600; }
+    .no-args { font-size: 12px; color: var(--text-muted); font-style: italic; margin-bottom: 16px; }
+    .code-label { font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.8px; color: var(--text-muted); margin-bottom: 8px; }
+    .code-wrap { border-radius: 8px; overflow: hidden; font-size: 12.5px; line-height: 1.55; }
+    .code-wrap pre { margin: 0; }
+    .code-wrap code { font-family: var(--mono) !important; }
+    .section-divider { height: 1px; background: var(--border); margin: 10px 40px; }
+    .overview-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; margin-bottom: 28px; }
+    .stat-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+    .stat-card .stat-num { font-size: 28px; font-weight: 700; color: var(--accent2); }
+    .stat-card .stat-label { font-size: 12px; color: var(--text-muted); margin-top: 2px; }
+    .generated-notice { font-size: 11px; color: var(--text-muted); margin-top: 8px; }
+    .generated-notice code { font-family: var(--mono); background: #f0f0f8; padding: 1px 4px; border-radius: 3px; }
+  </style>
+</head>
+<body>
+<nav id="sidebar">
+  <div class="sidebar-brand">
+    <h1>Tango</h1>
+    <p>Backend API Reference · Auto-generated</p>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Getting Started</div>
+    <a class="sidebar-link active" href="#overview">Overview</a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Auth</div>
+    <a class="sidebar-link" href="#auth-signIn">signIn <span class="fn-badge fn-badge-m">M</span></a>
+    <a class="sidebar-link" href="#auth-signOut">signOut <span class="fn-badge fn-badge-m">M</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Companies</div>
+    <a class="sidebar-link" href="#companies-create">create <span class="fn-badge fn-badge-m">M</span></a>
+    <a class="sidebar-link" href="#companies-get">get <span class="fn-badge fn-badge-q">Q</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Email</div>
+    <a class="sidebar-link" href="#email-sendMorningEmail">sendMorningEmail <span class="fn-badge fn-badge-i">I</span></a>
+    <a class="sidebar-link" href="#email-sendEveningEmail">sendEveningEmail <span class="fn-badge fn-badge-i">I</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">GoogleCalendar</div>
+    <a class="sidebar-link" href="#googleCalendar-createDailyEvent">createDailyEvent <span class="fn-badge fn-badge-i">I</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">MagicLinks</div>
+    <a class="sidebar-link" href="#magicLinks-generate">generate <span class="fn-badge fn-badge-i">I</span></a>
+    <a class="sidebar-link" href="#magicLinks-validate">validate <span class="fn-badge fn-badge-m">M</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Notion</div>
+    <a class="sidebar-link" href="#notion-syncReport">syncReport <span class="fn-badge fn-badge-i">I</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">NotionHelpers</div>
+    <a class="sidebar-link" href="#notionHelpers-getReportForSync">getReportForSync <span class="fn-badge fn-badge-i">I</span></a>
+    <a class="sidebar-link" href="#notionHelpers-markSynced">markSynced <span class="fn-badge fn-badge-i">I</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Prefill</div>
+    <a class="sidebar-link" href="#prefill-generateDraft">generateDraft <span class="fn-badge fn-badge-i">I</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Reminders</div>
+    <a class="sidebar-link" href="#reminders-triggerMorning">triggerMorning <span class="fn-badge fn-badge-i">I</span></a>
+    <a class="sidebar-link" href="#reminders-triggerEvening">triggerEvening <span class="fn-badge fn-badge-i">I</span></a>
+    <a class="sidebar-link" href="#reminders-sendMorningToUser">sendMorningToUser <span class="fn-badge fn-badge-i">I</span></a>
+    <a class="sidebar-link" href="#reminders-sendEveningToUser">sendEveningToUser <span class="fn-badge fn-badge-i">I</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Reports</div>
+    <a class="sidebar-link" href="#reports-get">get <span class="fn-badge fn-badge-q">Q</span></a>
+    <a class="sidebar-link" href="#reports-list">list <span class="fn-badge fn-badge-q">Q</span></a>
+    <a class="sidebar-link" href="#reports-create">create <span class="fn-badge fn-badge-m">M</span></a>
+    <a class="sidebar-link" href="#reports-update">update <span class="fn-badge fn-badge-m">M</span></a>
+    <a class="sidebar-link" href="#reports-submit">submit <span class="fn-badge fn-badge-m">M</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Tasks</div>
+    <a class="sidebar-link" href="#tasks-listByRange">listByRange <span class="fn-badge fn-badge-q">Q</span></a>
+    <a class="sidebar-link" href="#tasks-listToday">listToday <span class="fn-badge fn-badge-q">Q</span></a>
+    <a class="sidebar-link" href="#tasks-listThisWeek">listThisWeek <span class="fn-badge fn-badge-q">Q</span></a>
+    <a class="sidebar-link" href="#tasks-listThisMonth">listThisMonth <span class="fn-badge fn-badge-q">Q</span></a>
+    <a class="sidebar-link" href="#tasks-list">list <span class="fn-badge fn-badge-q">Q</span></a>
+    <a class="sidebar-link" href="#tasks-listAll">listAll <span class="fn-badge fn-badge-q">Q</span></a>
+    <a class="sidebar-link" href="#tasks-getProgress">getProgress <span class="fn-badge fn-badge-q">Q</span></a>
+    <a class="sidebar-link" href="#tasks-create">create <span class="fn-badge fn-badge-m">M</span></a>
+    <a class="sidebar-link" href="#tasks-update">update <span class="fn-badge fn-badge-m">M</span></a>
+    <a class="sidebar-link" href="#tasks-remove">remove <span class="fn-badge fn-badge-m">M</span></a>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">Users</div>
+    <a class="sidebar-link" href="#users-getByIdentity">getByIdentity <span class="fn-badge fn-badge-q">Q</span></a>
+    <a class="sidebar-link" href="#users-addToCompany">addToCompany <span class="fn-badge fn-badge-m">M</span></a>
+    <a class="sidebar-link" href="#users-updatePreferences">updatePreferences <span class="fn-badge fn-badge-m">M</span></a>
+    <a class="sidebar-link" href="#users-getByEmail">getByEmail <span class="fn-badge fn-badge-i">I</span></a>
+    <a class="sidebar-link" href="#users-listByCompany">listByCompany <span class="fn-badge fn-badge-i">I</span></a>
+  </div>
+  <div class="sidebar-section">
+    <div class="sidebar-section-label">HTTP</div>
+    <a class="sidebar-link" href="#httpEndpoints">HTTP Endpoints</a>
+  </div>
+  <div class="sidebar-footer">
+    <a href="swagger.html">↗ Swagger UI (HTTP)</a>
+    <a href="swagger.json">↗ swagger.json</a>
+  </div>
+</nav>
+<main id="main">
+  <div class="section" id="overview">
+    <div class="section-title">Tango Backend</div>
+    <div class="section-desc">
+      Convex-powered backend for team task management and daily reporting.
+      <div class="generated-notice">Generated by <code>node docs/generate.js</code> · Re-run after adding functions.</div>
+    </div>
+    <div class="overview-grid">
+      <div class="stat-card"><div class="stat-num">35</div><div class="stat-label">Total functions</div></div>
+      <div class="stat-card"><div class="stat-num">11</div><div class="stat-label">Modules</div></div>
+      <div class="stat-card"><div class="stat-num">3</div><div class="stat-label">HTTP endpoints</div></div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="auth">
+    <div class="section-title">Auth</div>
+    <div class="section-desc">
+      Authentication via <code>@convex-dev/auth</code> with a Password provider.
+      Users must be pre-created by an admin (<code>users.addToCompany</code>) before they can sign in.
+      Use the exported <code>signIn</code> / <code>signOut</code> mutations from <code>convex/auth.ts</code>.
+    </div>
+
+    <div class="card" id="auth-signIn">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>auth.signIn</h3>
+      </div>
+      <div class="card-body">
+        <p class="fn-desc">Signs a user in with their email and staffId as the password. On success the session is established and subsequent queries/mutations run as that user.</p>
+        <div class="args-label">Arguments</div>
+        <table class="args">
+          <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td class="arg-name">provider</td><td class="arg-type">string</td><td><span class="pill-required">required</span></td><td>Must be <code>"password"</code></td></tr>
+            <tr><td class="arg-name">params.flow</td><td class="arg-type">string</td><td><span class="pill-required">required</span></td><td>Must be <code>"signIn"</code> for existing users</td></tr>
+            <tr><td class="arg-name">params.email</td><td class="arg-type">string</td><td><span class="pill-required">required</span></td><td>User's email address</td></tr>
+            <tr><td class="arg-name">params.password</td><td class="arg-type">string</td><td><span class="pill-required">required</span></td><td>The user's <code>staffId</code> (generated by admin on account creation)</td></tr>
+          </tbody>
+        </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  "provider": "password",
+  "params": {
+    "flow": "signIn",
+    "email": "",
+    "password": ""
+  }
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">import { useAuthActions } from "@convex-dev/auth/react";
+
+const { signIn } = useAuthActions();
+await signIn("password", { email: "jane@acme.com", password: staffId });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="auth-signOut">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>auth.signOut</h3>
+      </div>
+      <div class="card-body">
+        <p class="fn-desc">Ends the current session and clears the auth token. No arguments required.</p>
+        <div class="no-args">No arguments</div>
+        <div class="code-label">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">import { useAuthActions } from "@convex-dev/auth/react";
+
+const { signOut } = useAuthActions();
+await signOut();</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="companies">
+    <div class="section-title">Companies</div>
+    <div class="section-desc">Auto-generated from <code>convex/companies.ts</code></div>
+    
+    <div class="card" id="companies-create">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>companies.create</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">name</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">domain</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;name&quot;: &quot;&quot;,
+  &quot;domain&quot;: &quot;&quot;  // optional
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const fn = useMutation(api.companies.create);
+await fn({ name: …, domain: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="companies-get">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>companies.get</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">companyId</td>
+              <td class="arg-type">Id&lt;&quot;companies&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;companyId&quot;: &quot;&lt;companies_id&gt;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.companies.get, { companyId: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="email">
+    <div class="section-title">Email</div>
+    <div class="section-desc">Auto-generated from <code>convex/email.ts</code></div>
+    
+    <div class="card" id="email-sendMorningEmail">
+      <div class="card-header">
+        <span class="badge badge-internal">internal action</span>
+        <h3>email.sendMorningEmail</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">email</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">name</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">taskPageUrl</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;email&quot;: &quot;&quot;,
+  &quot;name&quot;: &quot;&quot;,
+  &quot;taskPageUrl&quot;: &quot;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.email.sendMorningEmail, { email: …, name: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="email-sendEveningEmail">
+      <div class="card-header">
+        <span class="badge badge-internal">internal action</span>
+        <h3>email.sendEveningEmail</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">email</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">name</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">magicLink</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;email&quot;: &quot;&quot;,
+  &quot;name&quot;: &quot;&quot;,
+  &quot;magicLink&quot;: &quot;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.email.sendEveningEmail, { email: …, name: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="googleCalendar">
+    <div class="section-title">GoogleCalendar</div>
+    <div class="section-desc">Auto-generated from <code>convex/googleCalendar.ts</code></div>
+    
+    <div class="card" id="googleCalendar-createDailyEvent">
+      <div class="card-header">
+        <span class="badge badge-internal">internal action</span>
+        <h3>googleCalendar.createDailyEvent</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">userId</td>
+              <td class="arg-type">Id&lt;&quot;users&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">type</td>
+              <td class="arg-type">union</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">title</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">description</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;userId&quot;: &quot;&lt;users_id&gt;&quot;,
+  &quot;type&quot;: &quot;&lt;value&gt;&quot;,
+  &quot;title&quot;: &quot;&quot;,
+  &quot;description&quot;: &quot;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.googleCalendar.createDailyEvent, { userId: …, type: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="magicLinks">
+    <div class="section-title">MagicLinks</div>
+    <div class="section-desc">Auto-generated from <code>convex/magicLinks.ts</code></div>
+    
+    <div class="card" id="magicLinks-generate">
+      <div class="card-header">
+        <span class="badge badge-internal">internal mutation</span>
+        <h3>magicLinks.generate</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">userId</td>
+              <td class="arg-type">Id&lt;&quot;users&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">purpose</td>
+              <td class="arg-type">union</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;userId&quot;: &quot;&lt;users_id&gt;&quot;,
+  &quot;purpose&quot;: &quot;&lt;value&gt;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.magicLinks.generate, { userId: …, purpose: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="magicLinks-validate">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>magicLinks.validate</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">token</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;token&quot;: &quot;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const fn = useMutation(api.magicLinks.validate);
+await fn({ token: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="notion">
+    <div class="section-title">Notion</div>
+    <div class="section-desc">Auto-generated from <code>convex/notion.ts</code></div>
+    
+    <div class="card" id="notion-syncReport">
+      <div class="card-header">
+        <span class="badge badge-internal">internal action</span>
+        <h3>notion.syncReport</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">reportId</td>
+              <td class="arg-type">Id&lt;&quot;reports&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;reportId&quot;: &quot;&lt;reports_id&gt;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.notion.syncReport, { reportId: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="notionHelpers">
+    <div class="section-title">NotionHelpers</div>
+    <div class="section-desc">Auto-generated from <code>convex/notionHelpers.ts</code></div>
+    
+    <div class="card" id="notionHelpers-getReportForSync">
+      <div class="card-header">
+        <span class="badge badge-internal">internal query</span>
+        <h3>notionHelpers.getReportForSync</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">reportId</td>
+              <td class="arg-type">Id&lt;&quot;reports&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;reportId&quot;: &quot;&lt;reports_id&gt;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.notionHelpers.getReportForSync, { reportId: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="notionHelpers-markSynced">
+      <div class="card-header">
+        <span class="badge badge-internal">internal mutation</span>
+        <h3>notionHelpers.markSynced</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">reportId</td>
+              <td class="arg-type">Id&lt;&quot;reports&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">syncedAt</td>
+              <td class="arg-type">number</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;reportId&quot;: &quot;&lt;reports_id&gt;&quot;,
+  &quot;syncedAt&quot;: 0
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.notionHelpers.markSynced, { reportId: …, syncedAt: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="prefill">
+    <div class="section-title">Prefill</div>
+    <div class="section-desc">Auto-generated from <code>convex/prefill.ts</code></div>
+    
+    <div class="card" id="prefill-generateDraft">
+      <div class="card-header">
+        <span class="badge badge-internal">internal query</span>
+        <h3>prefill.generateDraft</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">userId</td>
+              <td class="arg-type">Id&lt;&quot;users&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">date</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;userId&quot;: &quot;&lt;users_id&gt;&quot;,
+  &quot;date&quot;: &quot;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.prefill.generateDraft, { userId: …, date: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="reminders">
+    <div class="section-title">Reminders</div>
+    <div class="section-desc">Auto-generated from <code>convex/reminders.ts</code></div>
+    
+    <div class="card" id="reminders-triggerMorning">
+      <div class="card-header">
+        <span class="badge badge-internal">internal mutation</span>
+        <h3>reminders.triggerMorning</h3>
+      </div>
+      <div class="card-body">
+        
+        <div class="no-args">No arguments</div>
+        
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.reminders.triggerMorning, {});</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="reminders-triggerEvening">
+      <div class="card-header">
+        <span class="badge badge-internal">internal mutation</span>
+        <h3>reminders.triggerEvening</h3>
+      </div>
+      <div class="card-body">
+        
+        <div class="no-args">No arguments</div>
+        
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.reminders.triggerEvening, {});</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="reminders-sendMorningToUser">
+      <div class="card-header">
+        <span class="badge badge-internal">internal mutation</span>
+        <h3>reminders.sendMorningToUser</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">userId</td>
+              <td class="arg-type">Id&lt;&quot;users&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;userId&quot;: &quot;&lt;users_id&gt;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.reminders.sendMorningToUser, { userId: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="reminders-sendEveningToUser">
+      <div class="card-header">
+        <span class="badge badge-internal">internal mutation</span>
+        <h3>reminders.sendEveningToUser</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">userId</td>
+              <td class="arg-type">Id&lt;&quot;users&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;userId&quot;: &quot;&lt;users_id&gt;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.reminders.sendEveningToUser, { userId: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="reports">
+    <div class="section-title">Reports</div>
+    <div class="section-desc">Auto-generated from <code>convex/reports.ts</code></div>
+    
+    <div class="card" id="reports-get">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>reports.get</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">date</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;date&quot;: &quot;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.reports.get, { date: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="reports-list">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>reports.list</h3>
+      </div>
+      <div class="card-body">
+        
+        <div class="no-args">No arguments</div>
+        
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.reports.list);</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="reports-create">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>reports.create</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">date</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">prefill</td>
+              <td class="arg-type">boolean?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">tasksCompleted</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">blockers</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">workInProgress</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">nextSteps</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;date&quot;: &quot;&quot;,
+  &quot;prefill&quot;: false  // optional,
+  &quot;tasksCompleted&quot;: &quot;&quot;  // optional,
+  &quot;blockers&quot;: &quot;&quot;  // optional,
+  &quot;workInProgress&quot;: &quot;&quot;  // optional,
+  &quot;nextSteps&quot;: &quot;&quot;  // optional
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const fn = useMutation(api.reports.create);
+await fn({ date: …, prefill: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="reports-update">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>reports.update</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">reportId</td>
+              <td class="arg-type">Id&lt;&quot;reports&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">tasksCompleted</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">blockers</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">workInProgress</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">nextSteps</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;reportId&quot;: &quot;&lt;reports_id&gt;&quot;,
+  &quot;tasksCompleted&quot;: &quot;&quot;  // optional,
+  &quot;blockers&quot;: &quot;&quot;  // optional,
+  &quot;workInProgress&quot;: &quot;&quot;  // optional,
+  &quot;nextSteps&quot;: &quot;&quot;  // optional
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const fn = useMutation(api.reports.update);
+await fn({ reportId: …, tasksCompleted: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="reports-submit">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>reports.submit</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">reportId</td>
+              <td class="arg-type">Id&lt;&quot;reports&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;reportId&quot;: &quot;&lt;reports_id&gt;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const fn = useMutation(api.reports.submit);
+await fn({ reportId: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="tasks">
+    <div class="section-title">Tasks</div>
+    <div class="section-desc">Auto-generated from <code>convex/tasks.ts</code></div>
+    
+    <div class="card" id="tasks-listByRange">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>tasks.listByRange</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">startDate</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">endDate</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;startDate&quot;: &quot;&quot;,
+  &quot;endDate&quot;: &quot;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.tasks.listByRange, { startDate: …, endDate: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="tasks-listToday">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>tasks.listToday</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">timezone</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;timezone&quot;: &quot;&quot;  // optional
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.tasks.listToday, { timezone: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="tasks-listThisWeek">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>tasks.listThisWeek</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">timezone</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;timezone&quot;: &quot;&quot;  // optional
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.tasks.listThisWeek, { timezone: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="tasks-listThisMonth">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>tasks.listThisMonth</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">timezone</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;timezone&quot;: &quot;&quot;  // optional
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.tasks.listThisMonth, { timezone: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="tasks-list">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>tasks.list</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">date</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;date&quot;: &quot;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.tasks.list, { date: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="tasks-listAll">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>tasks.listAll</h3>
+      </div>
+      <div class="card-body">
+        
+        <div class="no-args">No arguments</div>
+        
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.tasks.listAll);</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="tasks-getProgress">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>tasks.getProgress</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">date</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;date&quot;: &quot;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.tasks.getProgress, { date: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="tasks-create">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>tasks.create</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">title</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">date</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">status</td>
+              <td class="arg-type">v.optional(</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;title&quot;: &quot;&quot;,
+  &quot;date&quot;: &quot;&quot;,
+  &quot;status&quot;: null  // optional
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const fn = useMutation(api.tasks.create);
+await fn({ title: …, date: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="tasks-update">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>tasks.update</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">taskId</td>
+              <td class="arg-type">Id&lt;&quot;tasks&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">title</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">status</td>
+              <td class="arg-type">v.optional(</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;taskId&quot;: &quot;&lt;tasks_id&gt;&quot;,
+  &quot;title&quot;: &quot;&quot;  // optional,
+  &quot;status&quot;: null  // optional
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const fn = useMutation(api.tasks.update);
+await fn({ taskId: …, title: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="tasks-remove">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>tasks.remove</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">taskId</td>
+              <td class="arg-type">Id&lt;&quot;tasks&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;taskId&quot;: &quot;&lt;tasks_id&gt;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const fn = useMutation(api.tasks.remove);
+await fn({ taskId: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="users">
+    <div class="section-title">Users</div>
+    <div class="section-desc">Auto-generated from <code>convex/users.ts</code></div>
+    
+    <div class="card" id="users-getByIdentity">
+      <div class="card-header">
+        <span class="badge badge-query">query</span>
+        <h3>users.getByIdentity</h3>
+      </div>
+      <div class="card-body">
+        
+        <div class="no-args">No arguments</div>
+        
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const data = useQuery(api.users.getByIdentity);</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="users-addToCompany">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>users.addToCompany</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">name</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">email</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">companyId</td>
+              <td class="arg-type">Id&lt;&quot;companies&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;name&quot;: &quot;&quot;,
+  &quot;email&quot;: &quot;&quot;,
+  &quot;companyId&quot;: &quot;&lt;companies_id&gt;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const fn = useMutation(api.users.addToCompany);
+await fn({ name: …, email: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="users-updatePreferences">
+      <div class="card-header">
+        <span class="badge badge-mutation">mutation</span>
+        <h3>users.updatePreferences</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">notifyChannels</td>
+              <td class="arg-type">v.optional(</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">morningTime</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">eveningTime</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            <tr>
+              <td class="arg-name">timezone</td>
+              <td class="arg-type">string?</td>
+              <td><span class="pill-optional">optional</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;notifyChannels&quot;: null  // optional,
+  &quot;morningTime&quot;: &quot;&quot;  // optional,
+  &quot;eveningTime&quot;: &quot;&quot;  // optional,
+  &quot;timezone&quot;: &quot;&quot;  // optional
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const fn = useMutation(api.users.updatePreferences);
+await fn({ notifyChannels: …, morningTime: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="users-getByEmail">
+      <div class="card-header">
+        <span class="badge badge-internal">internal query</span>
+        <h3>users.getByEmail</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">email</td>
+              <td class="arg-type">string</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;email&quot;: &quot;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.users.getByEmail, { email: … });</code></pre></div>
+      </div>
+    </div>
+
+    <div class="card" id="users-listByCompany">
+      <div class="card-header">
+        <span class="badge badge-internal">internal query</span>
+        <h3>users.listByCompany</h3>
+      </div>
+      <div class="card-body">
+        
+        
+          <div class="args-label">Arguments</div>
+          <table class="args">
+            <thead><tr><th>Name</th><th>Type</th><th>Required</th><th>Description</th></tr></thead>
+            <tbody>
+            <tr>
+              <td class="arg-name">companyId</td>
+              <td class="arg-type">Id&lt;&quot;companies&quot;&gt;</td>
+              <td><span class="pill-required">required</span></td>
+              <td></td>
+            </tr>
+            </tbody>
+          </table>
+        <div class="code-label" style="margin-top:14px;">Body / Arguments</div>
+        <div class="code-wrap"><pre><code class="language-json">{
+  &quot;companyId&quot;: &quot;&lt;companies_id&gt;&quot;
+}</code></pre></div>
+        <div class="code-label" style="margin-top:14px;">Example</div>
+        <div class="code-wrap"><pre><code class="language-typescript">const result = await ctx.runQuery(internal.users.listByCompany, { companyId: … });</code></pre></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="section-divider"></div>
+  <div class="section" id="httpEndpoints">
+    <div class="section-title">HTTP Endpoints</div>
+    <div class="section-desc">
+      Standard HTTP routes at <code>https://acrobatic-bison-425.eu-west-1.convex.site</code>.
+      See <a href="swagger.html" style="color:var(--accent2)">Swagger UI ↗</a> for interactive testing.
+    </div>
+    
+    <div class="card" id="http-hello">
+      <div class="card-header">
+        <span class="badge badge-get">GET</span>
+        <h3>/hello</h3>
+      </div>
+      <div class="card-body">
+        <p class="fn-desc">See <a href="swagger.html" style="color:var(--accent2)">Swagger UI</a> for full documentation and interactive testing.</p>
+      </div>
+    </div>
+
+    <div class="card" id="http-magic">
+      <div class="card-header">
+        <span class="badge badge-get">GET</span>
+        <h3>/magic</h3>
+      </div>
+      <div class="card-body">
+        <p class="fn-desc">See <a href="swagger.html" style="color:var(--accent2)">Swagger UI</a> for full documentation and interactive testing.</p>
+      </div>
+    </div>
+
+    <div class="card" id="http-scheduler-ping">
+      <div class="card-header">
+        <span class="badge badge-post">POST</span>
+        <h3>/scheduler/ping</h3>
+      </div>
+      <div class="card-body">
+        <p class="fn-desc">See <a href="swagger.html" style="color:var(--accent2)">Swagger UI</a> for full documentation and interactive testing.</p>
+      </div>
+    </div>
+  </div>
+  <div style="height:60px;"></div>
+</main>
+<script>
+  hljs.highlightAll();
+  const links = document.querySelectorAll('.sidebar-link[href^="#"]');
+  const ids = Array.from(links).map(l => l.getAttribute('href').slice(1));
+  function onScroll() {
+    let current = ids[0];
+    for (const id of ids) {
+      const el = document.getElementById(id);
+      if (el && el.getBoundingClientRect().top <= 120) current = id;
+    }
+    links.forEach(l => l.classList.toggle('active', l.getAttribute('href') === '#' + current));
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  links.forEach(link => {
+    link.addEventListener('click', e => {
+      e.preventDefault();
+      const t = document.getElementById(link.getAttribute('href').slice(1));
+      if (t) t.scrollIntoView({ behavior: 'smooth', block: 'start' });
+    });
+  });
+</script>
+</body>
+</html>

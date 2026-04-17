@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tango HTTP API — Swagger UI</title>
+  <link rel="stylesheet" href="https://unpkg.com/swagger-ui-dist@5/swagger-ui.css" />
+  <style>
+    body { margin: 0; background: #fafafa; }
+    .topbar { display: none !important; }
+    .swagger-ui .info hgroup.main { margin: 0 0 20px; }
+    .custom-header {
+      background: #1a1a2e;
+      color: #fff;
+      padding: 16px 24px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+    }
+    .custom-header .logo { font-size: 20px; font-weight: 700; letter-spacing: -0.5px; }
+    .custom-header .sub { font-size: 13px; opacity: 0.6; margin-left: auto; }
+    .custom-header a { color: #a78bfa; text-decoration: none; font-size: 13px; }
+    .custom-header a:hover { text-decoration: underline; }
+  </style>
+</head>
+<body>
+  <div class="custom-header">
+    <span class="logo">Tango</span>
+    <span style="opacity:0.4">|</span>
+    <span style="font-size:14px;opacity:0.8">HTTP API Reference</span>
+    <span class="sub"><a href="index.html">← Full API Docs (Convex)</a></span>
+  </div>
+  <div id="swagger-ui"></div>
+  <script src="https://unpkg.com/swagger-ui-dist@5/swagger-ui-bundle.js"></script>
+  <script>
+    SwaggerUIBundle({
+      url: './swagger.json',
+      dom_id: '#swagger-ui',
+      presets: [SwaggerUIBundle.presets.apis, SwaggerUIBundle.SwaggerUIStandalonePreset],
+      layout: 'BaseLayout',
+      deepLinking: true,
+      tryItOutEnabled: true,
+      defaultModelsExpandDepth: 2,
+      defaultModelExpandDepth: 2,
+    });
+  </script>
+</body>
+</html>
