@@ -1,0 +1,209 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Tango Backend HTTP API",
+    "version": "1.0.0",
+    "description": "HTTP endpoints exposed by the Tango Convex backend. Note: the main Convex API (queries, mutations, actions) is accessed via the Convex client SDK and is documented in index.html."
+  },
+  "servers": [
+    {
+      "url": "https://your-app.convex.site",
+      "description": "Production"
+    }
+  ],
+  "components": {
+    "securitySchemes": {
+      "bearerAuth": {
+        "type": "http",
+        "scheme": "bearer",
+        "description": "Shared secret set via the SCHEDULER_SECRET environment variable"
+      }
+    },
+    "schemas": {
+      "SchedulerPingRequest": {
+        "type": "object",
+        "required": [
+          "type"
+        ],
+        "properties": {
+          "type": {
+            "type": "string",
+            "enum": [
+              "morning",
+              "evening"
+            ],
+            "description": "Which reminder batch to trigger"
+          }
+        },
+        "example": {
+          "type": "morning"
+        }
+      },
+      "SchedulerPingResponse": {
+        "type": "object",
+        "properties": {
+          "ok": {
+            "type": "boolean",
+            "example": true
+          },
+          "type": {
+            "type": "string",
+            "enum": [
+              "morning",
+              "evening"
+            ],
+            "example": "morning"
+          }
+        }
+      },
+      "ErrorResponse": {
+        "type": "object",
+        "properties": {
+          "message": {
+            "type": "string"
+          }
+        }
+      }
+    }
+  },
+  "paths": {
+    "/hello": {
+      "get": {
+        "summary": "Health check",
+        "description": "Simple liveness probe. Returns the plain-text string `Hello World` with a 200 status.",
+        "operationId": "healthCheck",
+        "tags": [
+          "Health"
+        ],
+        "responses": {
+          "200": {
+            "description": "Service is alive",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Hello World"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/magic": {
+      "get": {
+        "summary": "Magic link validation",
+        "description": "Validates a single-use magic link token. On success, redirects the user to either the report page (`/report?userId=...`) or the dashboard (`/dashboard?userId=...`) depending on the token's `purpose` field. Tokens expire after 1 hour and can only be used once.",
+        "operationId": "magicLinkValidate",
+        "tags": [
+          "Auth"
+        ],
+        "parameters": [
+          {
+            "name": "token",
+            "in": "query",
+            "required": true,
+            "description": "UUID magic link token sent to the user via email",
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            }
+          }
+        ],
+        "responses": {
+          "302": {
+            "description": "Token valid — redirects to report or dashboard page",
+            "headers": {
+              "Location": {
+                "schema": {
+                  "type": "string"
+                },
+                "description": "Redirect URL (e.g. https://yourapp.com/report?userId=...)"
+              }
+            }
+          },
+          "400": {
+            "description": "Missing token query parameter",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Missing token."
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Token invalid, already used, or expired",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Invalid token."
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/scheduler/ping": {
+      "post": {
+        "summary": "Manual reminder trigger",
+        "description": "Allows an external scheduler (e.g. GitHub Actions) to manually trigger the morning or evening reminder batch as a fallback to the built-in Convex cron. Protected by a Bearer token matching the `SCHEDULER_SECRET` environment variable.",
+        "operationId": "schedulerPing",
+        "tags": [
+          "Scheduler"
+        ],
+        "security": [
+          {
+            "bearerAuth": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/SchedulerPingRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Reminder batch triggered successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SchedulerPingResponse"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Missing or invalid `type` field in request body",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string"
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Missing or invalid Bearer token",
+            "content": {
+              "text/plain": {
+                "schema": {
+                  "type": "string",
+                  "example": "Unauthorized."
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}
