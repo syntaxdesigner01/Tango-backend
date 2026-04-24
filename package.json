@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "convex dev",
-    "build": "convex codegen",
+    "build": "npx convex codegen",
     "test": "echo \"Error: no test specified\" && exit 1",
     "docs": "node docs/generate.js"
   },
