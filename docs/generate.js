@@ -45,11 +45,11 @@ const SKIP_FILES = new Set([
   'http.ts',
 ]);
 
-// Read environment variables from .env.local
+// Read environment variables from .env.local or process.env
 const envPath = path.join(__dirname, '..', '.env.local');
 const envFile = fs.existsSync(envPath) ? fs.readFileSync(envPath, 'utf8') : '';
-const CONVEX_URL = envFile.match(/CONVEX_URL\s*=\s*["']?([^"'\n\r]+)["']?/)?.[1]?.trim() || 'https://your-app.convex.cloud';
-const CONVEX_SITE_URL = envFile.match(/CONVEX_SITE_URL\s*=\s*["']?([^"'\n\r]+)["']?/)?.[1]?.trim() || 'https://your-app.convex.site';
+const CONVEX_URL = process.env.CONVEX_URL || envFile.match(/CONVEX_URL\s*=\s*["']?([^"'\n\r]+)["']?/)?.[1]?.trim() || 'https://your-app.convex.cloud';
+const CONVEX_SITE_URL = process.env.CONVEX_SITE_URL || envFile.match(/CONVEX_SITE_URL\s*=\s*["']?([^"'\n\r]+)["']?/)?.[1]?.trim() || 'https://your-app.convex.site';
 
 const COPY_SVG = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path></svg>`;
 
