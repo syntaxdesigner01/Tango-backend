@@ -80,3 +80,41 @@ export const sendEveningEmail = internalAction({
     await sendEmail(args.email, subject, html);
   },
 });
+
+export const sendWelcomeEmail = internalAction({
+  args: {
+    email: v.string(),
+    name: v.string(),
+    staffId: v.string(),
+    companyName: v.string(),
+  },
+  handler: async (_ctx, args) => {
+    const subject = `Welcome to ${args.companyName} on Tango! 🎉`;
+    const html = `
+      <div style="font-family:sans-serif;max-width:600px;margin:auto">
+        <h2>Congratulations, ${args.name}! 🎉</h2>
+        <p>You've been added to <strong>${args.companyName}</strong> on Tango, your team's productivity tracking platform.</p>
+
+        <div style="background:#f3f4f6;border-radius:8px;padding:16px 24px;margin:24px 0">
+          <p style="margin:0 0 4px;color:#6b7280;font-size:13px;text-transform:uppercase;letter-spacing:.05em">Your Staff ID</p>
+          <p style="margin:0;font-size:28px;font-weight:700;letter-spacing:.15em;color:#111827">${args.staffId}</p>
+          <p style="margin:8px 0 0;color:#6b7280;font-size:13px">Keep this safe — it's your password to sign in.</p>
+        </div>
+
+        <h3 style="color:#111827">Getting Started</h3>
+        <ol style="color:#374151;line-height:1.8">
+          <li>Open the <strong>Tango extension</strong> in your browser</li>
+          <li>Click <strong>Sign In</strong></li>
+          <li>Enter your email: <strong>${args.email}</strong></li>
+          <li>Enter your Staff ID as your password: <strong>${args.staffId}</strong></li>
+        </ol>
+
+        <p style="color:#6b7280;font-size:13px;margin-top:24px">
+          You're receiving this because an admin has added you to ${args.companyName} on Tango.
+          If this was a mistake, you can safely ignore this email.
+        </p>
+      </div>
+    `;
+    await sendEmail(args.email, subject, html);
+  },
+});

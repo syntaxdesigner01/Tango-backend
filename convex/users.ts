@@ -1,6 +1,7 @@
 import { internalQuery, mutation, query } from "./_generated/server";
 import { v } from "convex/values";
 import { ConvexError } from "convex/values";
+import { internal } from "./_generated/api";
 import { getAuthUser } from "./auth";
 
 // Look up the currently authenticated user
@@ -46,6 +47,14 @@ export const addToCompany = mutation({
       morningTime: "10:00",
       eveningTime: "17:00",
       timezone: "Africa/Lagos",
+    });
+
+    const company = await ctx.db.get(args.companyId);
+    await ctx.scheduler.runAfter(0, internal.email.sendWelcomeEmail, {
+      email: args.email,
+      name: args.name,
+      staffId,
+      companyName: company?.name ?? "Your Company",
     });
 
     return { userId, staffId };
